@@ -24,7 +24,27 @@ CHERRY\t  -\t  -\t\tpays\t$2
 7\t  7\t  7\t\tpays\tTHE JACKPOT!
 ''')
 
+time.sleep(10)
+#constants
+INIT_STAKE = 50
+INIT_BALANCE = 1000
+ITEMS = ["CHERRY", "LEMON", "ORANGE", "PLUM", "BELL", "BAR", "7"]
 
+firstWheel = None
+secondWheel = None
+thirdWheel = None
+stake = INIT_STAKE
+balance = INIT_BALANCE
+
+def play():
+    global stake, firstWheel, secondWheel, thirdWheel
+    playQuestion = askPlayer()
+    while(stake != 0 and playQuestion == True):
+        firstWheel = spinWheel()       #spinWheel functionality will be added later
+        secondWheel = spinWheel()
+        thirdWheel = spinWheel()
+        printScore()
+        playQuestion = askPlayer()
 
 def askPlayer():
     ''' Player is asked if he wants to play again '''
