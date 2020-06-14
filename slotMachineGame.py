@@ -40,10 +40,10 @@ def play():
     global stake, firstWheel, secondWheel, thirdWheel
     playQuestion = askPlayer()
     while(stake != 0 and playQuestion == True):
-        firstWheel = spinWheel()       #spinWheel functionality will be added later
+        firstWheel = spinWheel()       
         secondWheel = spinWheel()
         thirdWheel = spinWheel()
-        printScore()
+        printScore()                #printScore function will be added later
         playQuestion = askPlayer()
 
 def askPlayer():
@@ -69,3 +69,10 @@ def askPlayer():
             print ("You currently have $" + str(stake) + ". Keep it going!")
         else:
             print("Couldn't process what you were doing there. Please try again!")
+            
+def spinWheel():
+    '''
+    returns a random item from the wheel
+    '''
+    randomNumber = random.randint(0, 5)
+    return ITEMS[randomNumber]
