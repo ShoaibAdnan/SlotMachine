@@ -25,7 +25,7 @@ CHERRY\t  -\t  -\t\tpays\t$2
 ''')
 
 time.sleep(10)
-#constants
+
 INIT_STAKE = 50
 INIT_BALANCE = 1000
 ITEMS = ["CHERRY", "LEMON", "ORANGE", "PLUM", "BELL", "BAR", "7"]
@@ -57,12 +57,12 @@ def askPlayer():
             balance = 1000
 
         print ("The Jackpot is currently: $" + str(balance) + ".")
-        answer = input("Would you like to play (y)? Or check your money? (check)")
+        answer = input("Would you like to play (y)? Or check your money? (check): ")
         answer = answer.lower()
         if(answer == "yes" or answer == "y"):
             return True
         elif(answer == "no" or answer == "n"):
-            print("You ended the game with $" + str(stake) + " in your hand. Excellent job!")
+            print("You ended the game with $" + str(stake) + " in your hand. Good Game!")
             time.sleep(5)
             return False
         elif(answer == "check" or answer == "CHECK"):
@@ -71,35 +71,33 @@ def askPlayer():
             print("Couldn't process what you were doing there. Please try again!")
             
 def spinWheel():
-    '''
-    returns a random item from the wheel
-    '''
+    ''' returns a random item from the wheel '''
     randomNumber = random.randint(0, 5)
     return ITEMS[randomNumber]
 
 def printScore():
-    '''
-    prints the current score
-    '''
+    ''' prints the current score '''
+    
     global stake, firstWheel, secondWheel, thirdWheel, balance
+    
     if((firstWheel == "CHERRY") and (secondWheel != "CHERRY")):
         win = 2
-        balance = balance - 2
+        balance -= 2
     elif((firstWheel == "CHERRY") and (secondWheel == "CHERRY") and (thirdWheel != "CHERRY")):
         win = 5
-        balance = balance - 5
+        balance -= 5
     elif((firstWheel == "CHERRY") and (secondWheel == "CHERRY") and (thirdWheel == "CHERRY")):
         win = 7
-        balance = balance - 7
+        balance -= 7
     elif((firstWheel == "ORANGE") and (secondWheel == "ORANGE") and ((thirdWheel == "ORANGE") or (thirdWheel == "BAR"))):
         win = 10
-        balance = balance - 10
+        balance -= 10
     elif((firstWheel == "PLUM") and (secondWheel == "PLUM") and ((thirdWheel == "PLUM") or (thirdWheel == "BAR"))):
         win = 14
-        balance = balance - 14
+        balance -= 14
     elif((firstWheel == "BELL") and (secondWheel == "BELL") and ((thirdWheel == "BELL") or (thirdWheel == "BAR"))):
         win = 20
-        balance = balance - 20
+        balance -= 20
     elif((firstWheel == "BAR") and (secondWheel == "BAR") and (thirdWheel == "BAR")):
         win = 250
         balance -= 250
@@ -107,14 +105,16 @@ def printScore():
         win = balance
         balance -= win
     else:
-        win = -1
-        balance = balance + 1
+        win -= 1
+        balance += 1
 
     stake += win
+    
     if win == balance:
-        print ("You won the JACKPOT!!")
+        print ("YOU WIN THE JACKPOT!!!")
+        
     if(win > 0):
-        print(firstWheel + '\t' + secondWheel + '\t' + thirdWheel + ' -- You win £' + str(win))
+        print(firstWheel + '\t' + secondWheel + '\t' + thirdWheel + ' -- You win $' + str(win))
         time.sleep(3)
         os.system('cls' if os.name == 'nt' else 'clear')
     else:
