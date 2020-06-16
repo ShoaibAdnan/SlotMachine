@@ -43,7 +43,7 @@ def play():
         firstWheel = spinWheel()       
         secondWheel = spinWheel()
         thirdWheel = spinWheel()
-        printScore()                #printScore function will be added later
+        printScore()               
         playQuestion = askPlayer()
 
 def askPlayer():
@@ -76,3 +76,50 @@ def spinWheel():
     '''
     randomNumber = random.randint(0, 5)
     return ITEMS[randomNumber]
+
+def printScore():
+    '''
+    prints the current score
+    '''
+    global stake, firstWheel, secondWheel, thirdWheel, balance
+    if((firstWheel == "CHERRY") and (secondWheel != "CHERRY")):
+        win = 2
+        balance = balance - 2
+    elif((firstWheel == "CHERRY") and (secondWheel == "CHERRY") and (thirdWheel != "CHERRY")):
+        win = 5
+        balance = balance - 5
+    elif((firstWheel == "CHERRY") and (secondWheel == "CHERRY") and (thirdWheel == "CHERRY")):
+        win = 7
+        balance = balance - 7
+    elif((firstWheel == "ORANGE") and (secondWheel == "ORANGE") and ((thirdWheel == "ORANGE") or (thirdWheel == "BAR"))):
+        win = 10
+        balance = balance - 10
+    elif((firstWheel == "PLUM") and (secondWheel == "PLUM") and ((thirdWheel == "PLUM") or (thirdWheel == "BAR"))):
+        win = 14
+        balance = balance - 14
+    elif((firstWheel == "BELL") and (secondWheel == "BELL") and ((thirdWheel == "BELL") or (thirdWheel == "BAR"))):
+        win = 20
+        balance = balance - 20
+    elif((firstWheel == "BAR") and (secondWheel == "BAR") and (thirdWheel == "BAR")):
+        win = 250
+        balance -= 250
+    elif((firstWheel == "7") and (secondWheel == "7") and (thirdWheel == "7")):
+        win = balance
+        balance -= win
+    else:
+        win = -1
+        balance = balance + 1
+
+    stake += win
+    if win == balance:
+        print ("You won the JACKPOT!!")
+    if(win > 0):
+        print(firstWheel + '\t' + secondWheel + '\t' + thirdWheel + ' -- You win £' + str(win))
+        time.sleep(3)
+        os.system('cls' if os.name == 'nt' else 'clear')
+    else:
+        print(firstWheel + '\t' + secondWheel + '\t' + thirdWheel + ' -- You lose')
+        time.sleep(2)
+        os.system('cls' if os.name == 'nt' else 'clear')
+
+play()
