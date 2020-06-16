@@ -105,7 +105,7 @@ def printScore():
         win = balance
         balance -= win
     else:
-        win -= 1
+        win = -1
         balance += 1
 
     stake += win
