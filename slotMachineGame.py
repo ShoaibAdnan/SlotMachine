@@ -1,16 +1,87 @@
-'''Author: Shoaib Adnan
-Project name: slotMachineGame
-Due date: June 17th
-Instructor: Eric Stock'''
-
-
-
 import random
 import os
-import time
+from enum import Enum
 
-print()
-print('''Welcome to the python Slot Machine!
+
+class SlotMachine:
+    INITIAL_STAKE = 50
+    INITIAL_JACKPOT = 1000
+
+    class Reel(Enum):
+        CHERRY = 1
+        LEMON = 2
+        ORANGE = 3
+        PLUM = 4
+        BELL = 5
+        BAR = 6
+        SEVEN = 7
+
+    _values = list(Reel)
+    payout = {
+        Reel.CHERRY: 7,
+        Reel.ORANGE: 10,
+        Reel.PLUM: 14,
+        Reel.BELL: 20,
+        Reel.BAR: 250,
+        Reel.SEVEN: 'jackpot'
+    }
+
+    def __init__(self, stake = INITIAL_STAKE, jackpot=INITIAL_JACKPOT):
+        self.current_stake = stake
+        self.current_jackpot = jackpot
+
+    @property
+    def keep_playing(self):
+        while(True):
+            os.system('cls' if os.name == 'nt' else 'clear')
+            if self.current_jackpot <= 1:
+                print("Machine balance reset.")
+                self.current_jackpot = SlotMachine.INITIAL_JACKPOT
+
+            print("The Jackpot is currently: ${}.".format(self.current_jackpot))
+            answer = input("Would you like to play? Or check your money? ").lower()
+            if answer in ["yes", "y"]:
+                return True
+            elif answer in ["no", "n"]:
+                print("You ended the game with ${} in your hand. Good Game!".format(self.current_stake))
+                return False
+            elif answer == "check":
+                print("You currently have ${}.".format(self.current_stake))
+            else:
+                print("Couldn't process what you were doing there. Please try again!")
+
+    def _play_round(self):
+        first, second, third = random.choice(SlotMachine._values), random.choice(SlotMachine._values), random.choice(SlotMachine._values)
+        self._adjust_score(first, second, third)
+
+    def _adjust_score(self, first, second, third):
+        if first == SlotMachine.Reel.CHERRY:
+            if second == SlotMachine.Reel.CHERRY:
+                win = 7 if third == SlotMachine.Reel.CHERRY else 5
+            else:
+                win = 2
+        else:
+            if first == second == third:
+                win = SlotMachine.payout[first]
+                win = self.current_jackpot if win == 'jackpot' else win
+            else:
+                win = -1
+
+        if win == self.current_jackpot:
+            print("YOU WIN THE JACKPOT!!!")
+        else:
+            print('\t'.join(map(lambda x: x.name.center(6), (first, second, third))))
+            print("You {} ${}".format("won" if win > 0 else "lost", win))
+            self.current_stake += win
+            self.current_jackpot -= win
+
+    def play(self):
+        while self.current_stake and self.keep_playing:
+            self._play_round()
+
+
+if __name__ == '__main__':
+    print('''Welcome to the python Slot Machine!
 You will start with $50 and you will be asked if you want to play.
 You can answer with yes/no or you can also use y/n
 The chart for winnings for individual combinations are as follows: 
@@ -23,103 +94,4 @@ CHERRY\tCHERRY\t  -\t\tpays\t$5
 CHERRY\t  -\t  -\t\tpays\t$2
 7\t  7\t  7\t\tpays\tTHE JACKPOT!
 ''')
-
-time.sleep(10)
-
-INIT_STAKE = 50
-INIT_BALANCE = 1000
-ITEMS = ["CHERRY", "LEMON", "ORANGE", "PLUM", "BELL", "BAR", "7"]
-
-firstWheel = None
-secondWheel = None
-thirdWheel = None
-stake = INIT_STAKE
-balance = INIT_BALANCE
-
-def play():
-    global stake, firstWheel, secondWheel, thirdWheel
-    playQuestion = askPlayer()
-    while(stake != 0 and playQuestion == True):
-        firstWheel = spinWheel()       
-        secondWheel = spinWheel()
-        thirdWheel = spinWheel()
-        printScore()               
-        playQuestion = askPlayer()
-
-def askPlayer():
-    ''' Player is asked if he wants to play again '''
-    global stake
-    global balance
-    while(True):
-        os.system('cls' if os.name == 'nt' else 'clear')
-        if (balance <=1):
-            print ("Slot Machine balance is reset.")
-            balance = 1000
-
-        print ("The Jackpot is currently: $" + str(balance) + ".")
-        answer = input("Would you like to play (y)? Or check your money? (check): ")
-        answer = answer.lower()
-        if(answer == "yes" or answer == "y"):
-            return True
-        elif(answer == "no" or answer == "n"):
-            print("You ended the game with $" + str(stake) + " in your hand. Good Game!")
-            time.sleep(5)
-            return False
-        elif(answer == "check" or answer == "CHECK"):
-            print ("You currently have $" + str(stake) + ". Keep it going!")
-        else:
-            print("Couldn't process what you were doing there. Please try again!")
-            
-def spinWheel():
-    ''' returns a random item from the wheel '''
-    randomNumber = random.randint(0, 5)
-    return ITEMS[randomNumber]
-
-def printScore():
-    ''' prints the current score '''
-    
-    global stake, firstWheel, secondWheel, thirdWheel, balance
-    
-    if((firstWheel == "CHERRY") and (secondWheel != "CHERRY")):
-        win = 2
-        balance -= 2
-    elif((firstWheel == "CHERRY") and (secondWheel == "CHERRY") and (thirdWheel != "CHERRY")):
-        win = 5
-        balance -= 5
-    elif((firstWheel == "CHERRY") and (secondWheel == "CHERRY") and (thirdWheel == "CHERRY")):
-        win = 7
-        balance -= 7
-    elif((firstWheel == "ORANGE") and (secondWheel == "ORANGE") and ((thirdWheel == "ORANGE") or (thirdWheel == "BAR"))):
-        win = 10
-        balance -= 10
-    elif((firstWheel == "PLUM") and (secondWheel == "PLUM") and ((thirdWheel == "PLUM") or (thirdWheel == "BAR"))):
-        win = 14
-        balance -= 14
-    elif((firstWheel == "BELL") and (secondWheel == "BELL") and ((thirdWheel == "BELL") or (thirdWheel == "BAR"))):
-        win = 20
-        balance -= 20
-    elif((firstWheel == "BAR") and (secondWheel == "BAR") and (thirdWheel == "BAR")):
-        win = 250
-        balance -= 250
-    elif((firstWheel == "7") and (secondWheel == "7") and (thirdWheel == "7")):
-        win = balance
-        balance -= win
-    else:
-        win = -1
-        balance += 1
-
-    stake += win
-    
-    if win == balance:
-        print ("YOU WIN THE JACKPOT!!!")
-        
-    if(win > 0):
-        print(firstWheel + '\t' + secondWheel + '\t' + thirdWheel + ' -- You win $' + str(win))
-        time.sleep(3)
-        os.system('cls' if os.name == 'nt' else 'clear')
-    else:
-        print(firstWheel + '\t' + secondWheel + '\t' + thirdWheel + ' -- You lose')
-        time.sleep(2)
-        os.system('cls' if os.name == 'nt' else 'clear')
-
-play()
+    SlotMachine().play()
