@@ -1,0 +1,6 @@
+Instructions on how to run the project:
+
+1. Install Python3 (Any IDE will do)
+2. Run the code.
+3. Wait a while for the code to fully run (might take about 5 - 10 seconds to load)
+4. Play and enjoy!
